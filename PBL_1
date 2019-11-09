@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define print printf
+
+void findOperator(char*);
+int findDot(char*);
+char* fillZero(char*, char*);
+char* calPlus(char*, char*);
+char* calMinus(char*, char*);
+
+char *result, *A, *B;
+// end definition
+int main() {
+    
+//    char input[] = "";
+    A = malloc(sizeof(char) * 50);
+    B = malloc(sizeof(char) * 50);
+    result = malloc(sizeof(char) * 50);
+    A = "88889";
+    B = "11111";
+    if(strlen(A) > strlen(B)) B = fillZero(A, B);  // A가 B보다 길 경우 B의 자리수를 맞추어 줌(정수부)
+    else if(strlen(B) > strlen(A)) A = fillZero(B, A);  // B가 A보다 길 경우 param을 뒤바꾸어 실행
+//    result = calPlus(A, B);  // result에 덧셈 결과 저장
+    result = calMinus(A, B);  // result에 뺄셈 결과 저장
+    //findOperator(input);
+    printf("A : %s \nB : %s \n", A, B);  // 현재 A, B값 (자리수까지 맞추어져 있음)
+    printf("result : %s\n", result);
+    return 0;
+}  // end main()
+char* calPlus(char *X, char*Y) {  // 덧셈
+    int i, sum, oneA, oneB, carry=0;
+    char *A = X, *B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
+    char *returningResult, doPlus, *temp;
+    int lengthA = strlen(A);
+    temp = malloc(sizeof(char));
+    returningResult = malloc(sizeof(char) * strlen(X));
+    for(i = 0; i < lengthA-1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
+    for(i = lengthA-1 ; i >= 0 ; i--, A--, B--) {  // 맨 뒤부터 앞으로 한칸씩 수행
+        if(*A == '.' || *B == '.') {  // 소수점을 만나게 되면 점을 찍고 다음 반복 수행
+            returningResult[i] = '.';
+            continue;
+        }
+        oneA = *A - 48;  // ASCII 값 중 0~9로 위치하도록 보정
+        oneB = *B - 48;
+        sum = oneA + oneB;  // 덧셈 수행
+        if(carry) {  // 지난 덧셈에서 carry가 있을 경우 sum에 carry를 더함
+            sum += carry;
+            carry = 0;  // carry 사용 후 0으로 초기화
+        }
+        doPlus = (sum % 10) + 48;  // ASCII 0~9값 설정
+        if(sum >= 10) carry++;  // 만약 합이 10보다 클 경우 carry++
+        returningResult[i] = doPlus;  // 현재 위치에 덧셈 결과 넣음
+    }
+    if(carry) {  // 맨 앞까지 덧셈을 끝낸 후 carry가 있다면 결과값 맨 앞에 1을 추가
+        strcat(temp, "1");
+        strcat(temp, returningResult);
+        returningResult = temp;
+    }
+    return returningResult;
+}  // end calPlus
+
+char* calMius(char *X, char*Y) {  // 뺄셈
+    int i, sum, oneA, oneB, carry=0;
+    char *A = X, *B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
+    char *returningResult, doMinus, *temp;
+    int lengthA = strlen(A);
+    temp = malloc(sizeof(char));
+    returningResult = malloc(sizeof(char) * strlen(X));
+    for(i = 0; i < lengthA-1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
+    for(i = lengthA-1 ; i >= 0 ; i--, A--, B--) {
+        if(*A == '.' || *B == '.') {
+            returningResult[i] = '.';
+            continue;
+        }
+        oneA = *A - 48;
+        oneB = *B - 48;
+        sum = oneA - oneB;
+        if(carry) {
+            sum += 10;
+            carry = 0;
+        }
+        doMinus = (sum % 10) + 48;
+        if(sum < 0) carry++;
+        returningResult[i] = doMinus;
+    }
+    printf("result : %s\n", returningResult);
+    if(carry) {
+    }
+    return returningResult;
+}  // end calMinus
+char* fillZero(char* A, char* B) {
+    int difference;
+    int integerOfA = findDot(A);  // A의 정수부 길이
+    int integerOfB = findDot(B);  // B의 정수부 길이
+    char *tempB = B;  // B를 tempB에 복사
+    difference = integerOfA - integerOfB;
+    char *temp = malloc(difference * sizeof(char));  // 두 수의 자릿수가 차이나는 만큼 0으로 채울 공간
+
+    if(integerOfA > integerOfB) {  // 정수부가 A가 B보다 긴 경우
+        for( ; difference > 0; difference--)  // 차이나는 만큼 0으로 채움
+            strcat(temp, "0");
+    }
+    strcat(temp, tempB);
+    return temp;
+}  // end plus
+
+int findDot(char* num) {  // 소수점까지의 length(정수부 길이)를 찾아 return함
+    int i = strcspn(num, ".");
+    int lenOfNumber = strlen(num);
+    return lenOfNumber;
+}
+
+
+void findOperator(char* input) {
+    int i;
+    int size = strlen(input);
+    print("%d",size);
+    for(i = 0; i < size; i++) {
+        if(isdigit(input[i]) == 0) {  // 정수가 아닌 문자 탐지
+            switch(input[i]) {
+                case '+':  // 덧셈 +
+                    break;
+                case '-':  // 뺄셈 -
+                    break;
+                case '*':  // 곱셈 *
+                    break;
+                default:  // 잘못 입력된 경우
+                    print("\n!! Unavailable input !!\n");
+                    exit(0);
+            }  // end switch
+        }  // end if
+    }  // end for
+}  // end findOperator
