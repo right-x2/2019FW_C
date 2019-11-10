@@ -11,5 +11,5 @@ PBL 과제(무한 계산기) 코드
 ### 후위연산 Stack 0%
 
 ##<수정>  
-정수부 0으로 채우는 함수(fillZeroInt)와 
+정수부 0으로 채우는 함수(fillZeroInt)와  
 소수부 0으로 채우는 함수(fillZeroDec) 분리
