@@ -17,8 +17,8 @@ int main() {
     A = malloc(sizeof(char) * 50);
     B = malloc(sizeof(char) * 50);
     result = malloc(sizeof(char) * 50);
-    A = "88889";
-    B = "11111";
+    A = "100";
+    B = "200";
     if(strlen(A) > strlen(B)) B = fillZero(A, B);  // A가 B보다 길 경우 B의 자리수를 맞추어 줌(정수부)
     else if(strlen(B) > strlen(A)) A = fillZero(B, A);  // B가 A보다 길 경우 param을 뒤바꾸어 실행
 //    result = calPlus(A, B);  // result에 덧셈 결과 저장
@@ -60,7 +60,7 @@ char* calPlus(char *X, char*Y) {  // 덧셈
     return returningResult;
 }  // end calPlus
 
-char* calMius(char *X, char*Y) {  // 뺄셈
+char* calMinus(char *X, char*Y) {  // 뺄셈
     int i, sum, oneA, oneB, carry=0;
     char *A = X, *B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
     char *returningResult, doMinus, *temp;
@@ -69,23 +69,32 @@ char* calMius(char *X, char*Y) {  // 뺄셈
     returningResult = malloc(sizeof(char) * strlen(X));
     for(i = 0; i < lengthA-1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
     for(i = lengthA-1 ; i >= 0 ; i--, A--, B--) {
-        if(*A == '.' || *B == '.') {
+        if(*A == '.' || *B == '.') {  // 소수점을 만나게 되면 점을 찍고 다음 반복 수행
             returningResult[i] = '.';
             continue;
         }
-        oneA = *A - 48;
+        oneA = *A - 48;  // ASCII 값 중 0~9로 위치하도록 보정
         oneB = *B - 48;
-        sum = oneA - oneB;
-        if(carry) {
-            sum += 10;
-            carry = 0;
+        sum = oneA - oneB;  // 뺄셈 수행
+        if(carry) {  // 직전 반복 뺼셈에서 carry 발생했을 경우 -1
+            sum--;
+            carry = 0;  // carry 사용 후 0으로 초기화
         }
-        doMinus = (sum % 10) + 48;
-        if(sum < 0) carry++;
+        if(sum < 0 && i == 0) {  // 맨 앞자리 뺄셈인데 음수일 경우
+            sum *= -1;  // 양수화
+            carry++;  // 캐리 ++
+        } else if(sum < 0) {  // 뺄셈이 음수일 경우
+            sum += 10;  // 10을 더하고 캐리 ++
+            carry++;
+        }
+        doMinus = (sum % 10) + 48;  // ASCII 0~9값 설정
         returningResult[i] = doMinus;
     }
     printf("result : %s\n", returningResult);
-    if(carry) {
+    if(carry) {  // 계산을 끝까지 마치고도 캐리가 있는 경우 = 계산 결과가 음수가 된 경우
+        strcat(temp, "-");  // 마이너스 부호 붙임
+        strcat(temp, returningResult);
+        returningResult = temp;
     }
     return returningResult;
 }  // end calMinus
