@@ -5,6 +5,10 @@
 #define print printf
 #include<ctype.h> //isspace, isdigit 함수가 선언된 헤더 파일
 
+int top, size;
+int *stack;
+char *result, *A, *B;
+
 void findOperator(char*);
 int findDot(char*);
 char* fillZeroInt(char*, char*);
@@ -21,9 +25,6 @@ int is_legal(char *s); // 후위표기법 수식이 적접한가 체크
 int precedence(int op); // 연산자의 우선순위를 수치로 변환해준다.
 void postfix(char *dst, char*src);// 중위표기법을 후위표기법으로 변환
 
-int top, size;
-int *stack;
-char *result, *A, *B;
 // end definition
 int main(int argc, char *argv[]) {
 	char *input;
