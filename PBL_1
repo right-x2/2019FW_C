@@ -5,6 +5,10 @@
 #define print printf
 #include<ctype.h> //isspace, isdigit 함수가 선언된 헤더 파일
 
+int top, size;
+int *stack;
+char *result, *A, *B;
+
 void findOperator(char*);
 int findDot(char*);
 char* fillZeroInt(char*, char*);
@@ -21,14 +25,10 @@ int is_legal(char *s); // 후위표기법 수식이 적접한가 체크
 int precedence(int op); // 연산자의 우선순위를 수치로 변환해준다.
 void postfix(char *dst, char*src);// 중위표기법을 후위표기법으로 변환
 
-int top;
-int *stack;
-char *result, *A, *B;
 // end definition
 int main(int argc, char *argv[]) {
 	char *input;
 	char *post_fix;
-	int size;
 
 	//FILE *fp = fopen(argv[1],"r");
 	FILE *fp = fopen("test.txt", "r");
@@ -39,7 +39,6 @@ int main(int argc, char *argv[]) {
 
 	fseek(fp, 0, SEEK_END); //파일 포인터를 파일의 끝으로 이동시킴
 	size = ftell(fp); //파일 포인터의 현재 위치를 얻음
-	printf("size=%d\n", size);
 
 	input = malloc(size + 1); //파일 크기 + 1바이트(문자열 마지막의 NULL)만큼 동적 메모리 할당
 	post_fix = malloc(size + 1);
@@ -53,12 +52,7 @@ int main(int argc, char *argv[]) {
 	printf("%s\nsize: %d\n", input, size);
 	postfix(post_fix, input);
 	printf("\nPostfix : %s", post_fix);
-	if (!is_legal(post_fix)) {
-		printf("\n Exprssion is legal!");
-		return -1;
-	}
-	int r = calc(post_fix);
-	printf("\nAnswer : %d", r);
+
 	fclose(fp);
 	free(input);
 
@@ -211,8 +205,8 @@ void findOperator(char* input) {
 		}  // end if
 	}  // end for
 }  // end findOperator
-int push(int t, int max) {
-	if (top >= max - 1) {
+int push(int t) {
+	if (top >= size - 1) {
 		printf("\nStack overflow.");
 		return -1;
 	}
@@ -255,7 +249,6 @@ int precedence(int op) {
 	else return 3;
 }
 void postfix(char *dst, char *src) {
-	char c;
 	init_stack();
 	while (*src) {
 		if (*src == '(') {
@@ -279,10 +272,10 @@ void postfix(char *dst, char *src) {
 			push(*src);
 			src++;
 		}
-		else if (*src >= '0' && *src <= '9') {
+		else if (*src >= '0' && *src <= '9' || *src == '.') {
 			do {
 				*dst++ = *src++;
-			} while (*src >= '0' && *src <= '9');
+			} while (*src >= '0' && *src <= '9' || *src == '.');
 			*dst++ = ' ';
 		}
 		else {
