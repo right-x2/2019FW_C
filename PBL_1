@@ -79,36 +79,72 @@ int main(int argc, char *argv[]) {
 }  // end main()
 
 char* calPlus(char *X, char*Y) {  // 덧셈
-	int i, sum, oneA, oneB, carry = 0;
-	char *A = X, *B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
-	char *returningResult, doPlus, *temp;
-	int lengthA = strlen(A);
-	temp = malloc(sizeof(char));
-	returningResult = malloc(sizeof(char) * strlen(X));
-	for (i = 0; i < lengthA - 1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
-	for (i = lengthA - 1; i >= 0; i--, A--, B--) {  // 맨 뒤부터 앞으로 한칸씩 수행
-		if (*A == '.' || *B == '.') {  // 소수점을 만나게 되면 점을 찍고 다음 반복 수행
-			returningResult[i] = '.';
-			continue;
-		}
-		oneA = *A - 48;  // ASCII 값 중 0~9로 위치하도록 보정
-		oneB = *B - 48;
-		sum = oneA + oneB;  // 덧셈 수행
-		if (carry) {  // 지난 덧셈에서 carry가 있을 경우 sum에 carry를 더함
-			sum += carry;
-			carry = 0;  // carry 사용 후 0으로 초기화
-		}
-		doPlus = (sum % 10) + 48;  // ASCII 0~9값 설정
-		if (sum >= 10) carry++;  // 만약 합이 10보다 클 경우 carry++
-		returningResult[i] = doPlus;  // 현재 위치에 덧셈 결과 넣음
-	}
-	if (carry) {  // 맨 앞까지 덧셈을 끝낸 후 carry가 있다면 결과값 맨 앞에 1을 추가
-		strcat(temp, "1");
-		strcat(temp, returningResult);
-		returningResult = temp;
-	}
-	return returningResult;
+    int i, sum, oneA, oneB, carry = 0;
+    char *A = X, *B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
+    char *returningResult, doPlus, *temp;
+    int lengthA = strlen(A);
+    temp = malloc(sizeof(char));
+    returningResult = malloc(sizeof(char) * strlen(X));
+    
+    if (X[0] == '-')
+    {
+        if (Y[0] == '-') // -1 + -3
+        {
+            *X = *X+1; //pointer이동해서 X값에서 음수 부호 빼주기
+            *Y = *Y+1;
+            char *result = calPlus(X, Y);
+            char *finalResult = malloc(strlen(result) + 1);
+            *&finalResult[1] = *result;
+            *&finalResult[0] = '-';
+            free(result);
+            return finalResult;
+        }
+        else // -1 + 3
+        {
+            *X = *X+1;
+            return calMinus(Y, X); //X에서 -만 빼기
+        }
+
+    }
+    else if (Y[0] == '-') // 1 + (-3)
+    {
+            *Y = *Y+1;
+            char *result = calMinus(Y, X);
+            char *finalResult = malloc(strlen(result) + 1);
+            *&finalResult[1] = *result;
+            *&finalResult[0] = '-';
+            free(result);
+            return finalResult;
+    }
+
+    else
+    
+    for (i = 0; i < lengthA - 1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
+    for (i = lengthA - 1; i >= 0; i--, A--, B--) {  // 맨 뒤부터 앞으로 한칸씩 수행
+        if (*A == '.' || *B == '.') {  // 소수점을 만나게 되면 점을 찍고 다음 반복 수행
+            returningResult[i] = '.';
+            continue;
+        }
+        oneA = *A - 48;  // ASCII 값 중 0~9로 위치하도록 보정
+        oneB = *B - 48;
+        sum = oneA + oneB;  // 덧셈 수행
+        if (carry) {  // 지난 덧셈에서 carry가 있을 경우 sum에 carry를 더함
+            sum += carry;
+            carry = 0;  // carry 사용 후 0으로 초기화
+        }
+        doPlus = (sum % 10) + 48;  // ASCII 0~9값 설정
+        if (sum >= 10) carry++;  // 만약 합이 10보다 클 경우 carry++
+        returningResult[i] = doPlus;  // 현재 위치에 덧셈 결과 넣음
+    }
+    if (carry) {  // 맨 앞까지 덧셈을 끝낸 후 carry가 있다면 결과값 맨 앞에 1을 추가
+        strcat(temp, "1");
+        strcat(temp, returningResult);
+        returningResult = temp;
+    }
+    return returningResult;
 }  // end calPlus
+
+
 char* calMinus(char *X, char*Y) {  // 뺄셈
 	int i, sum, oneA, oneB, carry = 0;
 	char *A, *B;  // A와 B를 바꿀 부분  <<----- B > A 라서 뺄셈시 음수가 될 때
