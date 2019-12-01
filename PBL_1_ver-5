@@ -92,18 +92,6 @@ char* cal_multiply(char *X, char *Y) {  // 곱셈
         length_B--;
     }
     if(multiply_decimal) {
-//        for(i = length_A-1 ; i >= 0 ; i--, A--, B--) {
-//            if(*A == '.' || *B == '.') {  // 소수점을 만나게 되면 점을 찍고 다음 반복 수행
-//                return_result[i] = '.';
-//                continue;
-//            }
-//        i = strlen(return_result) - decimal_length;
-//        char *A = TEST_S;
-//        while(*A++ = *X++)
-//            if(*(X) == '.')
-//                X++;
-//        return TEST_S;
-        
         // temp_A = result , temp_B = to return
         temp_A = (char*)calloc(sizeof(char), strlen(return_result));
         temp_B = (char*)calloc(sizeof(char), strlen(return_result)+1);
