@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define print printf
-
+const int CALLOCSIZE = 200;  // 동적 할당시 임시로 사용할 사이즈. 코드 완성 후엔 각 선언마다 적절한 lenth로 계산해서 사용할 것
 void find_operator(char*);
 int find_dot(char*);
 char* fill_zero_int(char*, char*);
@@ -21,19 +21,18 @@ int cal_decimal_length(char*, char*);
 int first_negative = 0;  // 첫 숫자가 음수일 경우 1, default 0
 //int A_bigger_abs = 0;  // 첫 숫자 A가 음수이며 덧셈할 B보다 값이 더 클 경우 1, default 0
 int multiply_decimal = 0;  // 소수가 있는 수의 곱셈시 1, default 0
-const int MSIZE = 100;  // malloc시 임시로 사용할 사이즈. 코드 완성 후엔 각 선언마다 적절한 lenth로 계산해서 사용할 것
 // end definition
 
 int main() {
 //    char input[] = "";
-    char* TEST_S = (char*)calloc(sizeof(char) , MSIZE);
-    X = (char*)calloc(sizeof(char) , MSIZE);
-    Y = (char*)calloc(sizeof(char) , MSIZE);
-    result = (char*)calloc(sizeof(char) , MSIZE);
+    char* TEST_S = (char*)calloc(sizeof(char) , CALLOCSIZE);
+    X = (char*)calloc(sizeof(char) , CALLOCSIZE);
+    Y = (char*)calloc(sizeof(char) , CALLOCSIZE);
+    result = (char*)calloc(sizeof(char) , CALLOCSIZE);
 //    scanf("%s", X);
 //    scanf("%s", Y);
-    X = "99";
-    Y = "9.999";
+    X = "99999999999999999999999999.999999999999999999999999";
+    Y = "99999999.999999999999999999999999999999999999999999";
 //    remove_dot(TEST_S, X);
 //    X = TEST_S;
 //    X = find_first_negative(X);
@@ -53,8 +52,8 @@ int main() {
 }  // end main()
 
 char* cal_multiply(char *X, char *Y) {  // 곱셈
-    char *A = (char*)calloc(sizeof(char) , MSIZE);
-    char *B = (char*)calloc(sizeof(char) , MSIZE);
+    char *A = (char*)calloc(sizeof(char) , CALLOCSIZE);
+    char *B = (char*)calloc(sizeof(char) , CALLOCSIZE);
     char *return_result, *temp_A, *temp_B;
     int length_A, length_B, return_size, multiply_num, abs_length_B, decimal_length, i;
     decimal_length = cal_decimal_length(X, Y);
@@ -92,7 +91,6 @@ char* cal_multiply(char *X, char *Y) {  // 곱셈
         length_B--;
     }
     if(multiply_decimal) {
-        // temp_A = result , temp_B = to return
         temp_A = (char*)calloc(sizeof(char), strlen(return_result));
         temp_B = (char*)calloc(sizeof(char), strlen(return_result)+1);
         strcpy(temp_A, return_result);
@@ -111,8 +109,11 @@ char* cal_multiply(char *X, char *Y) {  // 곱셈
 char* fill_zero_multi(char* A, int num) {
     char *temp = A;
 //    printf("num : %d , A : %s \n", num, A);
-    char *filled_A = (char*)calloc(sizeof(char) , (strlen(A) + num));
-    char *zeros = (char*)calloc(sizeof(char) , strlen(filled_A));
+    
+    char *filled_A = (char*)calloc(sizeof(char) , CALLOCSIZE);
+//    char *filled_A = (char*)calloc(sizeof(char) , (strlen(A) + num));
+    char *zeros = (char*)calloc(sizeof(char) , CALLOCSIZE);
+//    char *zeros = (char*)calloc(sizeof(char) , strlen(filled_A));
     for( ; num > 0; num--)
         strcat(zeros, "0");
     strcat(filled_A, temp);
@@ -189,7 +190,7 @@ char* cal_plus(char *X, char*Y) {  // 덧셈
     char *A = X, *B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
     char *return_result, doPlus, *temp;
     int length_A = strlen(A);
-    temp = (char*)calloc(sizeof(char) , MSIZE);
+    temp = (char*)calloc(sizeof(char) , CALLOCSIZE);
     return_result = (char*)calloc(sizeof(char) , strlen(X));
     for(i = 0; i < length_A-1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
     for(i = length_A-1 ; i >= 0 ; i--, A--, B--) {  // 맨 뒤부터 앞으로 한칸씩 수행
@@ -253,9 +254,9 @@ char* minus_exception(char *X, char *Y) {
     int A_bigger_abs = 0;
     A_bigger_abs = abs_compare(X, Y);  // X의 절대값이 Y보다 클 경우 A_bigger_abs = 1
     first_negative = 0;
-    temp_return = (char*)calloc(sizeof(char) , MSIZE);
+    temp_return = (char*)calloc(sizeof(char) , CALLOCSIZE);
     if(A_bigger_abs) {  // A<0 && abs(A) > abs(B)
-        temp = (char*)calloc(sizeof(char) , MSIZE);
+        temp = (char*)calloc(sizeof(char) , CALLOCSIZE);
         temp_return = cal_minus(A, B);
         strcat(temp, "-");  // 마이너스 부호 붙임
         strcat(temp, temp_return);
@@ -273,7 +274,7 @@ char* cal_minus(char *X, char*Y) {  // 뺄셈
     A = X; B = Y;  // X,Y로 받아 A,B로 이름 바꿔서 사용
     char *return_result, doMinus, *temp;
     int length_A = strlen(A);
-    temp = (char*)calloc(sizeof(char) , MSIZE);
+    temp = (char*)calloc(sizeof(char) , CALLOCSIZE);
     return_result = (char*)calloc(sizeof(char) , strlen(X));
     for(i = 0; i < length_A-1; i++, A++, B++) continue;  // A와 B의 포인터 위치를 맨 끝으로 이동하여 맨 뒤부터 계산하도록 함
     for(i = length_A-1 ; i >= 0 ; i--, A--, B--) {
@@ -312,17 +313,20 @@ char* fill_zero_int(char* A, char* B) {  // 덧셈, 뺄셈시 정수부 자리�
     int difference_int = int_A>int_B? int_A - int_B: int_B - int_A;
     char *temp_A = A;  // A를 temp_A에 복사
     char *temp_B = B;  // B를 temp_B에 복사
-    char *temp = (char*)calloc((strlen(A) + difference_int) , sizeof(char));  // 두 수의 자릿수가 차이나는 만큼 0으로 채울 공간
+//    char *temp = (char*)calloc((strlen(A) + difference_int) , sizeof(char));  // 두 수의 자릿수가 차이나는 만큼 0으로 채울 공간
+    char *temp = (char*)calloc(sizeof(char), CALLOCSIZE);
+    char *temp2 = (char*)calloc(sizeof(char), CALLOCSIZE);
 
-    difference_int = int_A - int_B;
+//    difference_int = int_A - int_B;
     if(int_A > int_B) {  // 정수부가 A가 B보다 긴 경우
         for( ; difference_int > 0; difference_int--)  // 차이나는 만큼 0으로 채움
             strcat(temp, "0");
 //        strcat(tempInt, temp_B);
 //        return tempInt;
     }
-    strcat(temp, temp_B);
-    return temp;
+    strcat(temp2, temp);
+    strcat(temp2, temp_B);
+    return temp2;
 }  // end plus
 
 char* fill_zero_dic(char *A, char *B) {  // 덧셈, 뺄셈시 소수부 자리수가 차이나는 만큼 0으로 채움
