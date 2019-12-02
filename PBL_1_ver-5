@@ -55,9 +55,10 @@ int main() {
 }  // end main()
 
 char* cal_multiply(char *a, char *b) {  // 곱셈
-   int i , j, sum,k,strlenA,strlenB,dot = 0;
+      int i , j, sum,k,strlenA,strlenB,dot = 0;
    int count = 0;
    int cnt = 0;
+   int nflag = 0;
    char one ;
    char *result = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *ptr;
@@ -65,12 +66,14 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
    char *temp = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *temp2 = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *temp3 = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *temp4 = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *c = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *d = malloc(sizeof(char)*strlen(a)*strlen(b));
    memset(answer,'X',sizeof(char)*strlen(a)*strlen(b));
    memset(temp,'X',sizeof(char)*strlen(a)*strlen(b));
    memset(temp2,'X',sizeof(char)*strlen(a)*strlen(b));
    memset(temp3,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp4,'X',sizeof(char)*strlen(a)*strlen(b));
   
    result = strchr(a,'.');
 
@@ -106,6 +109,38 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
    }
    cnt = 0;
 
+   if((*c=='-' && *d=='-')||(*c!='-' && *d!='-'))
+   {
+        if(*c=='-' && *d=='-')
+        {
+            strncpy(temp3,c+1,strlenA);
+            c = temp3;
+            strlenA--;
+
+            strncpy(temp4,d+1,strlenB);
+            d = temp4;
+            strlenB--;
+        }
+   }
+   else
+   {
+
+        nflag = 1;
+        if(*c=='-')
+        {
+
+            strncpy(temp3,c+1,strlenA);
+            c = temp3;
+            strlenA--;
+        }
+        else if(*d=='-')
+        {
+            strncpy(temp3,d+1,strlenB);
+            d = temp3;
+            strlenB--;
+        }
+   } 
+   //printf("%s\n",c );
    for(i = 0; i < strlenA-1; i++, c++) continue;
    for(j = 0; j < strlenB-1; j++, d++) continue;
    //for(j = 0; j < strlen(b); j++, d++) continue;
@@ -156,7 +191,16 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
       memset(answer,'X',sizeof(char)*strlen(a)*strlen(b));
       for(k = 0; k < strlenA; k++, c++) continue;
   }
-  if(dot==0) return temp2;
+  if(dot==0)
+  {
+    if(nflag==1)
+    {
+        char negative[1] = "-";
+        strcat(negative, temp2); 
+        strcpy(temp2,negative);
+    }
+    return temp2;
+  }
   
   else
   {
@@ -183,10 +227,22 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
         }
       }
       temp2[dotlen-dotcnt] = '\0';
+      if(nflag==1)
+      {
+        char negative[1] = "-";
+        strcat(negative, temp2); 
+        strcpy(temp2,negative);
+      }
       return temp2;
     }
     else
     {
+      if(nflag==1)
+      {
+        char negative[1] = "-";
+        strcat(negative, temp2); 
+        strcpy(temp2,negative);
+      }
       return temp2;
     }
   }
