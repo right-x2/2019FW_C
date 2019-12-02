@@ -12,7 +12,7 @@ const int CALLOCSIZE = 200;  // 동적 할당시 임시로 사용할 사이즈. 
 void find_operator(char*);
 int find_dot(char*);
 char* fill_zero_int(char*, char*);
-char* fill_zero_dic(char*, char*);
+char* fill_zero_dec(char*, char*);
 char* cal_plus(char*, char*);
 char* cal_minus(char*, char*);
 int abs_compare(char*, char*);
@@ -33,6 +33,8 @@ int B_negtive = 0;
 int first_negative = 0;  // 첫 숫자가 음수일 경우 1, default 0
 //int A_bigger_abs = 0;  // 첫 숫자 A가 음수이며 덧셈할 B보다 값이 더 클 경우 1, default 0
 int multiply_decimal = 0;  // 소수가 있는 수의 곱셈시 1, default 0
+int top, size;
+int *stack;
 void init_stack() { top = -1; }
 int push(int t);
 int pop();
@@ -45,11 +47,9 @@ int postfix(char *dst, char*src);// 중위표기법을 후위표기법으로 변
 void calc(char *p, int len); //후위표기법 계산
 // end definition
 
-int top, size;
-int *stack;
 
 int main(int argc, char *argv[]) {
-char *input;
+    char *input;
    char *post_fix;
    char *filename;
    int fp, readn;
@@ -129,8 +129,8 @@ char *input;
 //    X = find_first_negative(X);
 //    X = fill_zero_int(Y, X);
 //    Y = fill_zero_int(X, Y);
-//    X = fill_zero_dic(Y, X);
-//    Y = fill_zero_dic(X, Y);  // 지워도 될 듯
+//    X = fill_zero_dec(Y, X);
+//    Y = fill_zero_dec(X, Y);  // 지워도 될 듯
 //
 //    result = cal_plus(X, Y);  // result에 덧셈 결과 저장
     result = cal_minus(X, Y);  // result에 뺄셈 결과 저장
@@ -227,7 +227,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
             d = temp3;
             strlenB--;
         }
-   } 
+   }
    //printf("%s\n",c );
    for(i = 0; i < strlenA-1; i++, c++) continue;
    for(j = 0; j < strlenB-1; j++, d++) continue;
@@ -235,7 +235,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
    sum = 0;
    for (i = strlenB ; i > 0 ; i--, d--)
    {
-      answer[strlenA+cnt+1] = '\0';  
+      answer[strlenA+cnt+1] = '\0';
       for (j = strlenA+cnt; j > strlenA; j--)
       {
          answer[j] = '0';
@@ -284,7 +284,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
     if(nflag==1)
     {
         char negative[1] = "-";
-        strcat(negative, temp2); 
+        strcat(negative, temp2);
         strcpy(temp2,negative);
     }
     return temp2;
@@ -318,7 +318,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
       if(nflag==1)
       {
         char negative[1] = "-";
-        strcat(negative, temp2); 
+        strcat(negative, temp2);
         strcpy(temp2,negative);
       }
       return temp2;
@@ -328,7 +328,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
       if(nflag==1)
       {
         char negative[1] = "-";
-        strcat(negative, temp2); 
+        strcat(negative, temp2);
         strcpy(temp2,negative);
       }
       return temp2;
@@ -624,8 +624,8 @@ char* cal_plus(char *X, char*Y) {  // 덧셈
     char *return_result, doPlus, *temp, *finalResult;
     A = fill_zero_int(B, A);
     B = fill_zero_int(A, B);
-    A = fill_zero_dic(B, A);
-    B = fill_zero_dic(A, B);
+    A = fill_zero_dec(B, A);
+    B = fill_zero_dec(A, B);
     int length_A = strlen(A);
     temp = (char*)calloc(sizeof(char) , CALLOCSIZE);
     return_result = (char*)calloc(sizeof(char) , strlen(X));
@@ -637,8 +637,8 @@ char* cal_plus(char *X, char*Y) {  // 덧셈
             Y = Y+1;
             X = fill_zero_int(Y, X);
             Y = fill_zero_int(X, Y);
-            X = fill_zero_dic(Y, X);
-            Y = fill_zero_dic(X, Y);
+            X = fill_zero_dec(Y, X);
+            Y = fill_zero_dec(X, Y);
             printf("X : %s , Y : %s \n", X, Y);
             char *result = cal_plus(X, Y);
             finalResult = (char*)calloc(sizeof(char) ,  strlen(result) + 1);
@@ -658,16 +658,16 @@ char* cal_plus(char *X, char*Y) {  // 덧셈
             X = X+1;
             X = fill_zero_int(Y, X);
             Y = fill_zero_int(X, Y);
-            X = fill_zero_dic(Y, X);
-            Y = fill_zero_dic(X, Y);
+            X = fill_zero_dec(Y, X);
+            Y = fill_zero_dec(X, Y);
             return cal_minus(Y, X); //X에서 -만 빼기
         }
     } else if (Y[0] == '-') { // 1 + (-3)
         Y = Y+1;
         X = fill_zero_int(Y, X);
         Y = fill_zero_int(X, Y);
-        X = fill_zero_dic(Y, X);
-        Y = fill_zero_dic(X, Y);
+        X = fill_zero_dec(Y, X);
+        Y = fill_zero_dec(X, Y);
         char *result = cal_minus(Y, X);
         char *finalResult = malloc(strlen(result) + 1);
         for(i = 0 ; i <= strlen(result); i++) {
@@ -792,8 +792,8 @@ char* cal_minus(char *X, char*Y) {  // 뺄셈
 //                Y = Y+1;
 //                X = fill_zero_int(Y, X);
 //                Y = fill_zero_int(X, Y);
-//                X = fill_zero_dic(Y, X);
-//                Y = fill_zero_dic(X, Y);
+//                X = fill_zero_dec(Y, X);
+//                Y = fill_zero_dec(X, Y);
     //            printf("X : %s , Y : %s \n", X, Y);
                 if(A_bigger_abs) { // if abs A > abs B => -1 = - (19 - 18)
                     X++;
@@ -825,8 +825,8 @@ char* cal_minus(char *X, char*Y) {  // 뺄셈
                 X = X+1;
 //                X = fill_zero_int(Y, X);
 //                Y = fill_zero_int(X, Y);
-//                X = fill_zero_dic(Y, X);
-//                Y = fill_zero_dic(X, Y);
+//                X = fill_zero_dec(Y, X);
+//                Y = fill_zero_dec(X, Y);
 //                printf("X : %s , Y : %s \n", X, Y);
                 result = cal_plus(X, Y); //X에서 -만 빼기
                 for(i = 0 ; i <= strlen(result); i++) {
@@ -844,8 +844,8 @@ char* cal_minus(char *X, char*Y) {  // 뺄셈
             Y = Y+1;
 //            X = fill_zero_int(Y, X);
 //            Y = fill_zero_int(X, Y);
-//            X = fill_zero_dic(Y, X);
-//            Y = fill_zero_dic(X, Y);
+//            X = fill_zero_dec(Y, X);
+//            Y = fill_zero_dec(X, Y);
             char *result = cal_plus(X, Y);
             for(i = 0 ; i <= strlen(result); i++) {
                 if( *result == '0')
@@ -914,7 +914,7 @@ char* fill_zero_int(char* A, char* B) {  // 덧셈, 뺄셈시 정수부 자리�
     return temp2;
 }  // end plus
 
-char* fill_zero_dic(char *A, char *B) {  // 덧셈, 뺄셈시 소수부 자리수가 차이나는 만큼 0으로 채움
+char* fill_zero_dec(char *A, char *B) {  // 덧셈, 뺄셈시 소수부 자리수가 차이나는 만큼 0으로 채움
     int int_A = find_dot(A);  // A의 정수부 길이
     int int_B = find_dot(B);  // B의 정수부 길이
     int dec_A = strlen(A) - int_A;  // A의 소수부 길이
@@ -1064,9 +1064,9 @@ void calc(char *p, int len) {
    printf("len = %d\n",len);
    //int i; out과 비슷함
    //init_stack();
-   A = malloc(sizeof(char)*len + 1);
-   B = malloc(len + 1);
-   result = malloc(len + 1);
+   char *A = malloc(sizeof(char)*len + 1);
+   char *B = malloc(len + 1);
+   char *result = malloc(len + 1);
    memset(A, 0, len+1);
    memset(B, 0, len+1);
    memset(result, 0, (2*len)+1);
@@ -1090,61 +1090,63 @@ void calc(char *p, int len) {
       }
       else if (*p == '+') {
          //push(pop() + pop());
-         A = fillZeroInt(B, A);
-         B = fillZeroInt(A, B);
-         A = fillZeroDec(B, A);
-         B = fillZeroDec(A, B);
-         result = calPlus(A,B);
+         A = fill_zero_int(B, A);
+         B = fill_zero_int(A, B);
+         A = fill_zero_dec(B, A);
+         B = fill_zero_dec(A, B);
+         result = cal_plus(A,B);
          printf("A = %s\n",A);
          printf("B = %s\n",B);
          printf("result = %s\n",result);
+          memset(A, 0, len+1);
          A = result;
          memset(B, 0, len +1);
          p++;
       }
-      // else if (*p == '*') {
-      //    //push(pop() * pop());
-      //    A = fillZeroInt(B, A);
-      //    B = fillZeroInt(A, B);
-      //    A = fillZeroDec(B, A);
-      //    B = fillZeroDec(A, B);
-      //    result = calMul(A,B);
-      //    printf("A = %s\n",A);
-      //    printf("B = %s\n",B);
-      //    printf("result = %s\n",result);
-      //    A = result;
-      //    memset(B, 0, len+1);
-      //    memset(result, 0, len+1);
-      //    p++;
-      // }
-      // else if (*p == '-') {
-      //    // i = pop();
-      //    // push(pop() - i);
-      //    A = fillZeroInt(B, A);
-      //    B = fillZeroInt(A, B);
-      //    A = fillZeroDec(B, A);
-      //    B = fillZeroDec(A, B);
-      //    result = calMinus(A,B);
-      //    printf("A = %s\n",A);
-      //    printf("B = %s\n",B);
-      //    printf("result = %s\n",result);
-      //    A = result;
-      //    memset(B, 0, len+1);
-      //    p++;
-      // }
-      // else if (*p == '/') {
-      //    i = pop();
-      //    push(pop() / i);
-      //    p++;
-      // }
+       else if (*p == '*') {
+          //push(pop() * pop());
+//          A = fill_zero_int(B, A);
+//          B = fill_zero_int(A, B);
+//          A = fill_zero_dec(B, A);
+//          B = fill_zero_dec(A, B);
+          result = cal_multiply(A,B);
+          printf("A = %s\n",A);
+          printf("B = %s\n",B);
+          printf("result = %s\n",result);
+          A = result;
+          memset(B, 0, len+1);
+          memset(result, 0, len+1);
+          p++;
+       }
+       else if (*p == '-') {
+          // i = pop();
+          // push(pop() - i);
+          A = fill_zero_int(B, A);
+          B = fill_zero_int(A, B);
+          A = fill_zero_dec(B, A);
+          B = fill_zero_dec(A, B);
+          result = cal_minus(A,B);
+          printf("A = %s\n",A);
+          printf("B = %s\n",B);
+          printf("result = %s\n",result);
+          A = result;
+          memset(B, 0, len+1);
+          p++;
+       }
+       else if (*p == '/') {
+          i = pop();
+          push(pop() / i);
+          p++;
+       }
       else {
          i = 0;
          p++;
       }
-   } 
+   }
    //return pop();
    printf("result = %s\n",result);
    free(A);
    free(B);
    free(result);
 }
+
