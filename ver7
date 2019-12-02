@@ -48,7 +48,68 @@ void calc(char *p, int len); //후위표기법 계산
 int top, size;
 int *stack;
 
-int main() {
+int main(int argc, char *argv[]) {
+char *input;
+   char *post_fix;
+   char *filename;
+   int fp, readn;
+   int answer;
+
+   // 이 프로그램이 실행되기 위해서는 파일이름을 인자로 받는다.
+   // 그러므로 인자를 체크해주어야 한다.
+   // 만약 인자가 부족하다면, 프로그램의 사용방법을 출력하고 종료한다.
+   if (argc != 2)
+   {
+      printf("Usage : %s [file]\n", argv[0]);
+      return 1;
+   }
+
+   // filename 이 argv[1] 을 가리킨다.
+   // argv[1] 을 그대로 사용해도 되겠지만, 코드의 가독성을 위해서
+   // 다른 변수이름을 사용하도록 했다.
+   filename = argv[1];
+   fp = open(filename, O_RDONLY); // 파일을 읽기전용 모드로 연다.
+   if (fp < 0)
+   {
+      perror("file open err :");
+      return 0;
+   }
+   
+   size = lseek(fp, 0, SEEK_END);
+
+   input = malloc(size + 1); //파일 크기 + 1바이트(문자열 마지막의 NULL)만큼 동적 메모리 할당
+   post_fix = malloc(size + 1);
+   stack = malloc(sizeof(int) * size);
+   memset(input, 0, size + 1); //파일 크기 + 1바이트만큼 메모리를 0으로 초기화
+   memset(post_fix, 0, size + 1);
+
+   lseek(fp, 0, 0);
+
+   // read 함수를 이용해서, 파일지시자로 부터 데이터를 읽어들인다.
+   // read 함수는 읽어들인 데이터의 크기를 리턴한다.
+   // 더이상 읽을 데이터가 없다면 0을 리턴하니, 그때 while 루프를 빠져나오면 된다.
+   while ((readn = read(fp, input, size)) > 0)
+   {
+      // 읽어들인 데이터의 크기 만큼을 화면에 출력한다.
+      write(STDOUT, input, readn);
+   }
+
+   //printf("%s\nsize: %d\n", input, size);
+   int count = postfix(post_fix, input);
+   printf("\nPostfix : %s\n", post_fix);
+
+   // if (!is_legal(post_fix)) {
+   //    print("\n!! Unavailable input !!\n");
+   //    return 1;
+   // }
+
+   calc(post_fix, count);
+
+   close(fp);
+   free(input);
+   free(post_fix);
+   free(stack);
+   
 //    char input[] = "";
     char* TEST_S = (char*)calloc(sizeof(char) , CALLOCSIZE);
     X = (char*)calloc(sizeof(char) , CALLOCSIZE);
