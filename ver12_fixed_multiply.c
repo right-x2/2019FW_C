@@ -105,11 +105,12 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     }  // end if(!COMPILE_AT_XCODE)
-    
+    /*
     if(COMPILE_AT_XCODE) {
         input = INPUT_IN_XCODE;
         printf("in XCode input : %s", input);
     }  // end if(COMPILE_AT_XCODE)
+    */
     //printf("%s\nsize: %d\n", input, size);
     int count = postfix(post_fix, input); // 최대 글자수
     printf("\nPostfix : %s\n", post_fix);
@@ -209,19 +210,21 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
          }
          answer[j] = one;
       }
-      if(sum>0)
-         answer[j] = sum+48;
+      if(sum>0) answer[j] = sum+48;
       if(answer[0] == 'X') {
         strncpy(temp,answer+1,strlenA+cnt+1);
-        answer = temp;
+        strcpy(answer,temp);
+        //printf("%sanswer:\n",answer );
       }
-       if(count==0) {
-          strcpy(temp_a, temp2);
-       strcpy(temp_a, answer);
-       temp2 = temp_a;
+      if(count==0) {
+        strcpy(temp_a, temp2);
+        strcpy(temp_a, answer);
+        temp2 = temp_a;
 //        strcpy(temp2,answer);
-       } else
-        strcpy(temp2,mul_add(temp2,answer));
+      }else{
+          strcpy(temp2,mul_add(temp2,answer));
+          printf("%s\n",temp2 );
+      }
       cnt++;
       count++;
       sum = 0;
@@ -362,10 +365,8 @@ char* mul_add(char *a, char *b){
     if(sum>0)
         temp[0] = sum+48;
     else {
-        strncpy(temp_a, temp+1, lenB);
-//      strncpy(temp,temp+1,lenB);
-//      temp[lenB] = '\0';
-        temp_a[lenB] = '\0';
+        strncpy(temp,temp+1,lenB);
+        temp[lenB] = '\0';
     }
     return temp;
     free(temp);
@@ -465,20 +466,20 @@ char* remove_zero(char* str){
   memset(temp2,'X',sizeof(char)*len*2);
   memset(result,'X',sizeof(char)*len*2);
   strcpy(temp,str);
-  
   if(str[0]=='0') {
     while(1){
+      count++;
+        temp++;
       if(*temp=='.') {
         //count--;
         break;
-      } else if(*temp!='0')
+      } 
+      else if(*temp!='0')
         break;
       else {
-        count++;
-        temp++;
       }
     }
-    strncpy(str,str+count-1,len);
+    strncpy(str,str+count,len);
   }
   strcpy(temp2,str);
   dotlen = strlen(temp2);
@@ -677,7 +678,6 @@ char* cal_minus(char *a, char*b) {  // 뺄셈
     A = a; B = b;  // X,Y로 받아 A,B로 이름 바꿔서 사용
     char *return_result, doMinus, *temp, *finalResult;
     int length_A = strlen(A);
-
     temp = malloc(sizeof(char) * 10000);
     return_result = malloc(sizeof(char) * 1000);
     finalResult = malloc(sizeof(char) * 10000);
@@ -1038,6 +1038,8 @@ void calc(char *p, int len) {
             if (isdigit(*p)) B[i++] = '-';
             else {
                 answer = cal_minus(A, B);
+                printf("%sfdafds\n",answer );
+                strcpy(answer, remove_zero(answer));
                 if(PRINT_ON) print_in_calc(A, B, answer);
                 memset(A, 0, len + 1);
                 memset(B, 0, len + 1);
