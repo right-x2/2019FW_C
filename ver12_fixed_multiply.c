@@ -11,8 +11,9 @@
 
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 enum {OFF, ON};
-const int COMPILE_AT_XCODE = ON;  // 0 = gcc compile, 1 = xcode compile
-const char* INPUT_IN_XCODE = "(-5)*(-3)";
+enum {off, on};
+const int COMPILE_AT_XCODE = off;  // 0 = gcc compile, 1 = xcode compile
+const char* INPUT_IN_XCODE = "(-5.5)*(-3.5)";
 const int PRINT_ON = ON;  // stat=ON : print A, B, answer in calc
 void print_in_calc(char*, char*, char*);
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
@@ -135,7 +136,8 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
    char *temp2 = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *temp3 = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *temp4 = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char* temp_nozero = malloc(sizeof(char)*strlen(a)*strlen(b));
+    char* temp_a = malloc(sizeof(char)*strlen(a)*strlen(b));
+    char* temp_b = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *negative = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *c = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *d = malloc(sizeof(char)*strlen(a)*strlen(b));
@@ -213,9 +215,12 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
         strncpy(temp,answer+1,strlenA+cnt+1);
         answer = temp;
       }
-      if(count==0)
-        strcpy(temp2,answer);
-      else
+       if(count==0) {
+          strcpy(temp_a, temp2);
+       strcpy(temp_a, answer);
+       temp2 = temp_a;
+//        strcpy(temp2,answer);
+       } else
         strcpy(temp2,mul_add(temp2,answer));
       cnt++;
       count++;
@@ -224,8 +229,8 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
       for(k = 0; k < strlenA; k++, c++) continue;
   }
   if(dot==0){
-    strcpy(temp_nozero, remove_zero(temp2));
-      temp2 = temp_nozero;
+    strcpy(temp_a, remove_zero(temp2));
+      temp2 = temp_a;
     if(nflag==1){
          negative[0] = '-';
         negative[1] = '\0';
@@ -234,9 +239,16 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
     }
     return temp2;
   } else {
-    strcpy(temp2,add_dot(temp2,dot));
-    printf("%s\n",temp2 );
-    strcpy(temp2,remove_zero(temp2));
+      strcpy(temp_b, temp2);
+      strcpy(temp_b, add_dot(temp2, dot));
+      temp2 = temp_b;
+//    strcpy(temp2,add_dot(temp2,dot));
+      printf("%s\n",temp2 );
+      
+      strcpy(temp_a, temp2);
+      strcpy(temp_a, remove_zero(temp2));
+      temp2 = temp_a;
+//    strcpy(temp2,remove_zero(temp2));
     if(nflag==1) {
       negative[0] = '-';
       negative[1] = '\0';
@@ -256,7 +268,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
     }
 }  // end cal_multiply()
 char* mul_add(char *a, char *b){
-
+    char *temp_a = (char*)calloc(sizeof(char) , (strlen(a)+1)*strlen(b));
   if(strlen(a)>strlen(b)){
     int i = 0;
     int sum = 0;
@@ -350,8 +362,10 @@ char* mul_add(char *a, char *b){
     if(sum>0)
         temp[0] = sum+48;
     else {
-      strncpy(temp,temp+1,lenB);
-      temp[lenB] = '\0';
+        strncpy(temp_a, temp+1, lenB);
+//      strncpy(temp,temp+1,lenB);
+//      temp[lenB] = '\0';
+        temp_a[lenB] = '\0';
     }
     return temp;
     free(temp);
@@ -402,6 +416,7 @@ char* remove_dot(char *str){
     char *a = malloc(sizeof(char)*len);
     char *b = malloc(sizeof(char)*len);
     char *c = malloc(sizeof(char)*len);
+    char *temp = malloc(sizeof(char)*len);
     strcpy(a,str);
     ptr = strtok(a, ".");
     while(ptr != NULL ){
@@ -410,7 +425,10 @@ char* remove_dot(char *str){
         ptr = strtok(NULL, ".");
         cnt++;
     }
-    strcat(b,c);
+    strcat(temp, b);
+    strcat(temp, c);
+//    strcat(b,c);
+    b = temp;
     return b;
 }
 char* add_dot(char *str,int dot){
