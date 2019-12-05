@@ -1033,7 +1033,7 @@ void calc(char *p, int len) {
         A[i++] = *p++;
     } while (*p >= '0' && *p <= '9' || *p == '.');
     i = 0;
-    while (*p) { printf("LINE 1036 A : %s , B : %s\n", A, B);
+    while (*p) { printf("LINE 1036 p : %s , A : %s , B : %s\n", p, A, B);
         if (*p >= '0' && *p <= '9' || *p == '.') {
             do {
                 B[i++] = *p++;
