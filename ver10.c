@@ -1038,6 +1038,7 @@ void calc(char *p, int len) {
                 printf("A = %s\n", A);
                 printf("B = %s\n", B);
                 answer = cal_minus(A, B);
+                strcpy(answer,remove_zero(answer));
                 printf("answer = %s\n", answer);
                 memset(A, 0, len + 1);
                 memset(B, 0, len + 1);
