@@ -1,3 +1,4 @@
+  
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,9 +21,10 @@ char *result;
 char* find_first_negative(char*);
 char* cal_multiply(char*, char*);
 int cal_decimal_length(char*, char*);
-char* addDot(char *str, int dot);
-char* mullAdd(char *a, char *b);
-char* removeDot(char *str);
+char* add_dot(char* ,int);
+char* mul_add(char*, char*);
+char* remove_dot(char*);
+char* remove_zero(char*);
 int A_negative = 0;
 int B_negtive = 0;
 int first_negative = 0;  // 첫 숫자가 음수일 경우 1, default 0
@@ -119,419 +121,397 @@ int main(int argc, char *argv[]) {
 }  // end main()
 
 char* cal_multiply(char *a, char *b) {  // 곱셈
-    int i, j, sum, k, strlenA, strlenB, dot = 0;
-    int count = 0;
-    int cnt = 0;
-    int nflag = 0;
-    char one;
-    char *result = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *ptr;
-    char *answer = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *temp = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *temp2 = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *temp3 = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *temp4 = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *negative = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *c = malloc(sizeof(char)*strlen(a)*strlen(b));
-    char *d = malloc(sizeof(char)*strlen(a)*strlen(b));
-    memset(answer, 'X', sizeof(char)*strlen(a)*strlen(b));
-    memset(temp, 'X', sizeof(char)*strlen(a)*strlen(b));
-    memset(temp2, 'X', sizeof(char)*strlen(a)*strlen(b));
-    memset(temp3, 'X', sizeof(char)*strlen(a)*strlen(b));
-    memset(temp4, 'X', sizeof(char)*strlen(a)*strlen(b));
-    memset(negative, 'X', sizeof(char)*strlen(a)*strlen(b));
+   int i , j, sum,k,strlenA,strlenB,dot = 0;
+   int count = 0;
+   int cnt = 0;
+   int nflag = 0;
+   char one ;
+   char *result = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *ptr;
+   char *answer = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *temp = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *temp2 = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *temp3 = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *temp4 = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *negative = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *c = malloc(sizeof(char)*strlen(a)*strlen(b));
+   char *d = malloc(sizeof(char)*strlen(a)*strlen(b));
+   memset(answer,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp2,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp3,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp4,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(negative,'X',sizeof(char)*strlen(a)*strlen(b));
 
-    result = strchr(a, '.');
+   result = strchr(a,'.');
 
-    if (result != NULL)
-    {
-        c = removeDot(a);
-        strlenA = strlen(a) - 1;
-        dot = strlen(a) - find_dot(a) - 1 + dot;
-    }
-    else
-    {
+   if(result != NULL){
+
+        c = remove_dot(a);
+        strlenA = strlen(a)-1;
+        dot = strlen(a)-find_dot(a)-1 +dot;
+   }
+   else{
         c = a;
         strlenA = strlen(a);
-    }
-    cnt = 0;
+        
+   }
+   cnt = 0;
+   
+   
+   result = strchr(b,'.');
 
-    result = strchr(b, '.');
-
-    if (result != NULL)
-    {
-        d = removeDot(b);
-        strlenB = strlen(b) - 1;
-        dot = strlen(b) - find_dot(b) - 1 + dot;
-    }
-    else
-    {
+   if(result != NULL){
+        d = remove_dot(b);
+        strlenB = strlen(b)-1;
+        dot = strlen(b)-find_dot(b)-1 +dot;
+   }
+   else{
         d = b;
         strlenB = strlen(b);
-    }
-    cnt = 0;
+        
+   }
+   cnt = 0;
 
-    if ((*c == '-' && *d == '-') || (*c != '-' && *d != '-'))
-    {
-        if (*c == '-' && *d == '-')
-        {
-            strncpy(temp3, c + 1, strlenA);
-            c = temp3;
+   if((*c=='-' && *d=='-')||(*c!='-' && *d!='-')){
+        if(*c=='-' && *d=='-'){
+            strncpy(temp3,c+1,strlenA);
+            c=temp3;
             strlenA--;
 
-            strncpy(temp4, d + 1, strlenB);
-            d = temp4;
+            strncpy(temp4,d+1,strlenB);
+            d=temp4;
             strlenB--;
         }
-    }
-    else
-    {
+   }
+   else{
+
         nflag = 1;
-        if (*c == '-')
-        {
-            strncpy(temp3, c + 1, strlenA);
-            c = temp3;
+        if(*c=='-'){
+            strncpy(temp3,c+1,strlenA);
+            c=temp3;
             strlenA--;
         }
-        else if (*d == '-')
-        {
-            strncpy(temp3, d + 1, strlenB);
-            d = temp3;
+        else if(*d=='-'){
+            strncpy(temp3,d+1,strlenB);
+            d=temp3;
             strlenB--;
         }
-    }
-    for (i = 0; i < strlenA - 1; i++, c++) continue;
-    for (j = 0; j < strlenB - 1; j++, d++) continue;
-    sum = 0;
-    for (i = strlenB; i > 0; i--, d--)
-    {
-        answer[strlenA + cnt + 1] = '\0';
-        for (j = strlenA + cnt; j > strlenA; j--)
-            answer[j] = '0';
-        for (j = strlenA; j > 0; j--, c--)
-        {
-            int oneA = *c - 48;
-            int oneB = *d - 48;
+   }
+   for(i = 0; i < strlenA-1; i++, c++) continue;
+   for(j = 0; j < strlenB-1; j++, d++) continue;
+   sum = 0;
+   for (i = strlenB ; i > 0 ; i--, d--){
+      answer[strlenA+cnt+1] = '\0';  
+      for (j = strlenA+cnt; j > strlenA; j--){
+         answer[j] = '0';
+      }
+      for (j = strlenA; j > 0; j--,c--){
+         int oneA = *c-48;
+         int oneB = *d-48;
 
-            sum = oneA * oneB + sum;
-            if (sum > 9)
-            {
-                one = (sum % 10) + 48;
-                sum = sum / 10;
-            }
-            else
-            {
-                one = sum + 48;
-                sum = 0;
-            }
-            answer[j] = one;
-        }
-        if (sum > 0)
-        {
-            answer[j] = sum + 48;
-        }
-        if (answer[0] == 'X') {
-            strncpy(temp, answer + 1, strlenA + cnt + 1);
-            answer = temp;
-        }
-        if (count == 0)
-        {
-            strcpy(temp2, answer);
-        }
-        else
-        {
-            strcpy(temp2, mullAdd(temp2, answer));
-        }
-        cnt++;
-        count++;
-        sum = 0;
-        memset(answer, 'X', sizeof(char)*strlen(a)*strlen(b));
-        for (k = 0; k < strlenA; k++, c++) continue;
+         sum = oneA*oneB + sum;
+         if(sum>9){
+            one = (sum%10)+48;
+            sum = sum/10;
+         }
+         else{
+            one = sum+48;
+            sum = 0;
+         }
+         answer[j] = one;
+      }
+      if(sum>0){
+         answer[j] = sum+48;
+      }
+      if(answer[0] == 'X'){
+        strncpy(temp,answer+1,strlenA+cnt+1);
+        answer = temp;
+      }
+      if(count==0){
+        strcpy(temp2,answer);
+      }
+      else{
+        strcpy(temp2,mul_add(temp2,answer));
+      }
+      cnt++;
+      count++;
+      sum = 0;
+      memset(answer,'X',sizeof(char)*strlen(a)*strlen(b));
+      for(k = 0; k < strlenA; k++, c++) continue;
+  }
+  if(dot==0){
+    strcpy(temp2,remove_zero(temp2));
+    if(nflag==1){
+         negative[0] = '-';
+        negative[1] = '\0';
+        strcat(negative, temp2); 
+        strcpy(temp2,negative);
     }
-    if (dot == 0)
-    {
-        if (nflag == 1)
-        {
-            negative[0] = '-';
-            negative[1] = '\0';
-            strcat(negative, temp2);
-            strcpy(temp2, negative);
-        }
-        return temp2;
+    return temp2;
+  }
+  
+  else{
+    strcpy(temp2,add_dot(temp2,dot));
+    printf("%s\n",temp2 );
+    strcpy(temp2,remove_zero(temp2));
+    if(nflag==1){
+      negative[0] = '-';
+      negative[1] = '\0';
+      strcat(negative, temp2); 
+      strcpy(temp2,negative);
     }
-
-    else
-    {
-
-        strcpy(temp2, addDot(temp2, dot));
-        int dotlen = strlen(temp2);
-        int dotcnt = 0;
-        strcpy(temp3, temp2);
-        if (temp3[dotlen - 1] == '0')
-        {
-
-            for (i = 0; i < dotlen - 1; ++i, temp3++) continue;
-            while (1)
-            {
-                if (*temp3 == '.' || *temp3 != '0')
-                {
-                    if (*temp3 == '.') dotcnt++;
-                    break;
-                }
-                else
-                {
-                    *temp3--;
-                    dotcnt++;
-                }
-            }
-            temp2[dotlen - dotcnt] = '\0';
-            if (nflag == 1)
-            {
-                negative[0] = '-';
-                negative[1] = '\0';
-                strcat(negative, temp2);
-                strcpy(temp2, negative);
-            }
-            return temp2;
-        }
-        else
-        {
-            if (nflag == 1)
-            {
-                negative[0] = '-';
-                negative[1] = '\0';
-                strcat(negative, temp2);
-                strcpy(temp2, negative);
-            }
-            return temp2;
-        }
-    }
-    free(result);
-    free(answer);
-    free(temp);
-    free(temp2);
-    free(temp3);
-    free(c);
-    free(d);
+    return temp2;
+  }
+  free(result);
+  free(answer);
+  free(temp);
+  free(temp2);
+  free(temp3);
+  free(c);
+  free(d);
 }  // end cal_multiply()
-char* mullAdd(char *a, char *b)
-{
+char* mul_add(char *a, char *b){
 
-    if (strlen(a) > strlen(b))
-    {
-        int i = 0;
-        int sum = 0;
-        int one = 0;
-        int len = strlen(a) + 1;
-        int lenA = strlen(a);
-        int lenB = strlen(b);
-        char *temp = malloc(sizeof(char)*lenA*lenB);
-        memset(temp, 'X', sizeof(char)*len);
-        temp[len] = '\0';
-        len--;
+  if(strlen(a)>strlen(b)){
+    int i = 0;
+    int sum = 0;
+    int one = 0;
+    int len = strlen(a)+1;
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+    char *temp = malloc(sizeof(char)*lenA*lenB);
+    memset(temp,'X',sizeof(char)*len);
+    temp[len] = '\0';
+    len--;
 
-        for (i = 0; i < lenA - 1; ++i, a++) continue;
-        for (i = 0; i < lenB - 1; ++i, b++) continue;
+    for (i = 0; i < lenA-1; ++i,a++) continue;
+    for (i = 0; i < lenB-1; ++i,b++) continue;
 
-        for (i = lenB; i > 0; i--, b--, a--, len--)
-        {
-            int oneA = *a - 48;
-            int oneB = *b - 48;
-            sum = oneA + oneB + sum;
-            if (sum > 9)
-            {
-                one = (sum % 10) + 48;
-                sum = sum / 10;
-            }
-            else
-            {
-                one = sum + 48;
-                sum = 0;
-            }
-            temp[len] = one;
-        }
-
-        while (len > 0)
-        {
-            int oneA = *a - 48;
-            if (oneA + sum > 9)
-            {
-                temp[len] = ((oneA + sum) % 10) + 48;
-                sum = 1;
-            }
-            else if (sum > 0)
-            {
-                temp[len] = (oneA + sum) + 48;
-                sum = 0;
-            }
-            else
-            {
-                temp[len] = oneA + 48;
-            }
-            len--;
-            a--;
-        }
-        if (sum > 0) temp[0] = sum + 48;
-        else
-        {
-            strncpy(temp, temp + 1, lenA);
-            temp[lenA] = '\0';
-        }
-        return temp;
-        free(temp);
+    for (i = lenB; i > 0; i--,b--,a--,len--){
+      int oneA = *a-48;
+      int oneB = *b-48;
+      sum = oneA+oneB + sum;
+      if(sum>9){
+        one = (sum%10)+48;
+        sum = sum/10;
+      }
+      else{
+        one = sum+48;
+        sum = 0;
+      }
+      temp[len] = one;
     }
-    else if (strlen(a) < strlen(b))
-    {
-        int i = 0;
-        int sum = 0;
-        int one = 0;
-        int len = strlen(b) + 1;
-        int lenA = strlen(a);
-        int lenB = strlen(b);
-        char *temp = malloc(sizeof(char)*lenA*lenB);
-        memset(temp, 'X', sizeof(char)*lenA*lenB);
-        temp[len] = '\0';
-        len--;
-
-        for (i = 0; i < lenA - 1; ++i, a++) continue;
-        for (i = 0; i < lenB - 1; ++i, b++) continue;
-
-        for (i = lenA; i > 0; i--, b--, a--, len--)
-        {
-            int oneA = *a - 48;
-            int oneB = *b - 48;
-            sum = oneA + oneB + sum;
-            if (sum > 9)
-            {
-                one = (sum % 10) + 48;
-                sum = sum / 10;
-            }
-            else
-            {
-                one = sum + 48;
-                sum = 0;
-            }
-            temp[len] = one;
-        }
-
-        while (len > 0)
-        {
-            int oneB = *b - 48;
-            if (oneB + sum > 9)
-            {
-                temp[len] = ((oneB + sum) % 10) + 48;
-                sum = 1;
-            }
-            else if (sum > 0)
-            {
-                temp[len] = (oneB + sum) + 48;
-                sum = 0;
-            }
-            else
-            {
-                temp[len] = oneB + 48;
-            }
-            len--;
-            b--;
-        }
-        if (sum > 0) temp[0] = sum + 48;
-        else
-        {
-            strncpy(temp, temp + 1, lenB);
-            temp[lenB] = '\0';
-        }
-        return temp;
-        free(temp);
+    
+    while(len>0){
+      int oneA = *a-48;
+      if(oneA+sum>9){
+        temp[len] = ((oneA+sum)%10)+48;
+        sum = 1;
+      }
+      else if(sum>0){
+        temp[len] = (oneA+sum)+48;
+        sum = 0;
+      }
+      else{
+        temp[len] = oneA+48;
+      }
+      len--;
+      a--;
     }
-    else
-    {
-        int i = 0;
-        int sum = 0;
-        int one = 0;
-        int len = strlen(a) + 1;
-        int lenA = strlen(a);
-        int lenB = strlen(b);
-
-        char *temp = malloc(sizeof(char)*lenA*lenB);
-        memset(temp, 'X', sizeof(char)*len);
-        temp[len] = '\0';
-        len--;
-
-        for (i = 0; i < lenA - 1; ++i, a++) continue;
-        for (i = 0; i < lenB - 1; ++i, b++) continue;
-
-        for (i = lenB; i > 0; i--, b--, a--, len--)
-        {
-            int oneA = *a - 48;
-            int oneB = *b - 48;
-            sum = oneA + oneB + sum;
-            if (sum > 9)
-            {
-                one = (sum % 10) + 48;
-                sum = sum / 10;
-            }
-            else
-            {
-                one = sum + 48;
-                sum = 0;
-            }
-            temp[len] = one;
-        }
-        if (sum > 0)
-        {
-            temp[0] = sum + 48;
-        }
-        else
-        {
-            strncpy(temp, temp + 1, lenA);
-            temp[lenA] = '\0';
-        }
-        return temp;
-        free(temp);
+    if(sum>0) temp[0] = sum+48;
+    else{
+      strncpy(temp,temp+1,lenA);
+      temp[lenA] = '\0';
     }
+    return temp;
+    free(temp);
+  }
+  else if(strlen(a)<strlen(b)){
+    int i = 0;
+    int sum = 0;
+    int one = 0;
+    int len = strlen(b)+1;
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+    char *temp = malloc(sizeof(char)*lenA*lenB);
+    memset(temp,'X',sizeof(char)*lenA*lenB);
+    temp[len] = '\0';
+    len--;
 
+    for (i = 0; i < lenA-1; ++i,a++) continue;
+    for (i = 0; i < lenB-1; ++i,b++) continue;
+
+    for (i = lenA; i > 0; i--,b--,a--,len--){
+      int oneA = *a-48;
+      int oneB = *b-48;
+      sum = oneA+oneB + sum;
+      if(sum>9){
+        one = (sum%10)+48;
+        sum = sum/10;
+      }
+      else{
+        one = sum+48;
+        sum = 0;
+      }
+      temp[len] = one;
+    }
+    
+    while(len>0){
+      int oneB = *b-48;
+      if(oneB+sum>9){
+        temp[len] = ((oneB+sum)%10)+48;
+        sum = 1;
+      }
+      else if(sum>0){
+        temp[len] = (oneB+sum)+48;
+        sum = 0;
+      }
+      else{
+        temp[len] = oneB+48;
+      }
+      len--;
+      b--;
+    }
+    if(sum>0) temp[0] = sum+48;
+    else{
+      strncpy(temp,temp+1,lenB);
+      temp[lenB] = '\0';
+    }
+    return temp;
+    free(temp);
+  }
+  else{
+    int i = 0;
+    int sum = 0;
+    int one = 0;
+    int len = strlen(a)+1;
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+
+    char *temp = malloc(sizeof(char)*lenA*lenB);
+    memset(temp,'X',sizeof(char)*len);
+    temp[len] = '\0';
+    len--;
+
+    for (i = 0; i < lenA-1; ++i,a++) continue;
+    for (i = 0; i < lenB-1; ++i,b++) continue;
+
+    for (i = lenB; i > 0; i--,b--,a--,len--){
+      int oneA = *a-48;
+      int oneB = *b-48;
+      sum = oneA+oneB + sum;
+      if(sum>9){
+        one = (sum%10)+48;
+        sum = sum/10;
+      }
+      else{
+        one = sum+48;
+        sum = 0;
+      }
+      temp[len] = one;
+    }
+    if(sum>0){
+      temp[0] = sum+48;
+    }
+    else{
+      strncpy(temp,temp+1,lenA);
+      temp[lenA] = '\0';
+    }
+    return temp;
+    free(temp);
+  }
 }
-char* removeDot(char *str)
-{
 
-    int cnt = 0;
+char* remove_dot(char *str){
+    int cnt = 0,len = strlen(str);
     char *ptr;
-    char *a = malloc(sizeof(char) * 30);
-    char *b = malloc(sizeof(char) * 30);
-    char *c = malloc(sizeof(char) * 30);
-    strcpy(a, str);
+    char *a = malloc(sizeof(char)*len);
+    char *b = malloc(sizeof(char)*len);
+    char *c = malloc(sizeof(char)*len);
+    strcpy(a,str);
     ptr = strtok(a, ".");
-    while (ptr != NULL) {
-        if (cnt == 0) b = ptr;
+    while(ptr != NULL ){
+        if(cnt==0) b = ptr;
         else c = ptr;
         ptr = strtok(NULL, ".");
         cnt++;
     }
-    strcat(b, c);
+    strcat(b,c);
     return b;
 }
-char* addDot(char *str, int dot)
-{
+char* add_dot(char *str,int dot){
     int i;
-    char *answer = malloc(sizeof(char) * 100000);
-    char *temp = malloc(sizeof(char) * 100000);
-    memset(answer, 'X', sizeof(char) * 100000);
-    memset(temp, 'X', sizeof(char) * 100000);
-    strcpy(answer, str);
+    int len2 = strlen(str);
+    char *answer = malloc(sizeof(char)*len2);
+    char *temp = malloc(sizeof(char)*len2);
+    memset(answer,'X',sizeof(char)*len2);
+    memset(temp,'X',sizeof(char)*len2);
+    strcpy(answer,str);
     int len = strlen(answer);
     temp[len] = '\0';
-    for (i = 0; i <= len + 1; ++i, answer++)
-    {
-        if (i + dot == len)
-        {
-            temp[i] = '.';
-            answer--;
+    for (i = 0; i <= len+1; ++i,answer++){
+        if(i+dot==len){
+          temp[i] = '.';
+          answer--;
         }
         else temp[i] = *answer;
     }
     return temp;
     free(answer);
     free(temp);
+}
+
+char* remove_zero(char* str){
+
+  int count = 0,dotlen = 0,dotcnt = 0,i = 0;
+  int len = strlen(str);
+  char *temp = malloc(sizeof(char)*len*2);
+  char *temp2 = malloc(sizeof(char)*len*2);
+  char *result = malloc(sizeof(char)*len*2);
+  memset(temp,'X',sizeof(char)*len*2);
+  memset(temp2,'X',sizeof(char)*len*2);
+  memset(result,'X',sizeof(char)*len*2);
+  strcpy(temp,str);
+  
+  if(str[0]=='0'){
+
+    while(1){
+      if(*temp=='.'){
+        //count--;
+        break;
+      }
+      else if(*temp!='0') {
+        break;
+      }
+      else{
+        count++;
+        temp++;
+      }
+    }
+    strncpy(str,str+count-1,len);
+  }
+  strcpy(temp2,str);
+  dotlen = strlen(temp2);
+  result = strchr(str,'.');
+  if(result != NULL){
+    if(temp2[dotlen-1]=='0'){
+
+      for (i = 0; i < dotlen-1; ++i,temp2++) continue;
+      while(1){
+        if(*temp2=='.'||*temp2!='0'){
+          if(*temp2=='.') dotcnt++;
+          break;
+        }
+        else{
+          *temp2--;
+          dotcnt++;
+        }
+      }
+      str[dotlen-dotcnt] = '\0';
+    }
+  }
+  return str;
 }
 int cal_decimal_length(char* X, char* Y) {  // 곱셈시 각 수의 소수부 길이를 계산하여 합 return
     int len = 0, a, b;
