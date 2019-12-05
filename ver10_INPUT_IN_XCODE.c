@@ -42,9 +42,10 @@ int postfix(char *dst, char*src);// 중위표기법을 후위표기법으로 변
 void calc(char *p, int len); //후위표기법 계산
 // end definition
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-const int COMPILE_AT_XCODE = 0;  // 0 = gcc compile, 1 = xcode compile
-const char* INPUT_IN_XCODE = "500-11+11";
-const int PRINT_ON = 1;  // stat=1 : print A, B, answer in calc
+enum {OFF, ON};
+const int COMPILE_AT_XCODE = ON;  // 0 = gcc compile, 1 = xcode compile
+const char* INPUT_IN_XCODE = "222222222222.22-1111111.11";
+const int PRINT_ON = ON;  // stat=ON : print A, B, answer in calc
 void print_in_calc(char*, char*, char*);
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 int main(int argc, char *argv[]) {
@@ -702,7 +703,6 @@ char* minus_exception(char *X, char *Y) {
     return temp_return;
 }  // end minus_exception
 char* cal_minus(char *a, char*b) {  // 뺄셈
-
     int i, sum, oneA, oneB, carry = 0, exception_minus = 0;
     char *A, *B;  // A와 B를 바꿀 부분  <<----- B > A 라서 뺄셈시 음수가 될 때
     A = a; B = b;  // X,Y로 받아 A,B로 이름 바꿔서 사용
