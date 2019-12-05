@@ -1,3 +1,4 @@
+  
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,8 +44,11 @@ int postfix(char *dst, char*src);// 중위표기법을 후위표기법으로 변
 void calc(char *p, int len); //후위표기법 계산
 // end definition
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-const int COMPILE_AT_XCODE = 0;  // 0 = gcc compile, 1 = xcode compile
-const char* INPUT_IN_XCODE = "500-11+11";
+enum {OFF, ON};
+const int COMPILE_AT_XCODE = ON;  // 0 = gcc compile, 1 = xcode compile
+const char* INPUT_IN_XCODE = "222222222222.22-1111111.11";
+const int PRINT_ON = ON;  // stat=ON : print A, B, answer in calc
+void print_in_calc(char*, char*, char*);
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 int main(int argc, char *argv[]) {
     char *input;
@@ -74,7 +78,7 @@ int main(int argc, char *argv[]) {
         }
 
         size = lseek(fp, 0, SEEK_END);
-    }  // if(!COMPILE_AT_XCODE)
+    }  // end if(!COMPILE_AT_XCODE)
     
     if(COMPILE_AT_XCODE) size = strlen(INPUT_IN_XCODE);
     
@@ -97,9 +101,12 @@ int main(int argc, char *argv[]) {
             print("\n!! Unavailable input !!\n");
             return 1;
         }
-    }  // if(!COMPILE_AT_XCODE)
+    }  // end if(!COMPILE_AT_XCODE)
     
-    if(COMPILE_AT_XCODE) input = INPUT_IN_XCODE;
+    if(COMPILE_AT_XCODE) {
+        input = INPUT_IN_XCODE;
+        printf("in XCode input : %s", input);
+    }  // end if(COMPILE_AT_XCODE)
     //printf("%s\nsize: %d\n", input, size);
     int count = postfix(post_fix, input); // 최대 글자수
     printf("\nPostfix : %s\n", post_fix);
@@ -506,7 +513,18 @@ char* remove_zero(char* str){
   }
   return str;
 }
-
+int cal_decimal_length(char* X, char* Y) {  // 곱셈시 각 수의 소수부 길이를 계산하여 합 return
+    int len = 0, a, b;
+    a = strlen(X) - find_dot(X);
+    b = strlen(Y) - find_dot(Y);
+    if (a > 0)
+        len += a - 1;
+    if (b > 0)
+        len += b - 1;
+    if (len > 0)
+        multiply_decimal = 1;
+    return len;
+}  // end cal_decimal_length()
 char* cal_plus(char *X, char*Y) {  // 덧셈
 //    if(first_negative) return minus_exception(X, Y);
     int i, sum, oneA, oneB, carry = 0;
@@ -665,7 +683,6 @@ char* minus_exception(char *X, char *Y) {
     return temp_return;
 }  // end minus_exception
 char* cal_minus(char *a, char*b) {  // 뺄셈
-
     int i, sum, oneA, oneB, carry = 0, exception_minus = 0;
     char *A, *B;  // A와 B를 바꿀 부분  <<----- B > A 라서 뺄셈시 음수가 될 때
     A = a; B = b;  // X,Y로 받아 A,B로 이름 바꿔서 사용
@@ -987,7 +1004,7 @@ int postfix(char *dst, char *src) {
     return max;
 }
 void calc(char *p, int len) {
-    printf("len = %d\n\n", len);
+    printf("len = %d\n", len);
     char *A = malloc(len + 1);
     char *B = malloc(len + 1);
     char *answer = malloc((2 * sizeof(char)*len) + 1);
@@ -1001,7 +1018,7 @@ void calc(char *p, int len) {
         A[i++] = *p++;
     } while (*p >= '0' && *p <= '9' || *p == '.');
     i = 0;
-    while (*p) { printf("LINE 1036 p : %s , A : %s , B : %s\n", p, A, B);
+    while (*p) { // printf("LINE 1036 p : %s , A : %s , B : %s\n", p, A, B);
         if (*p >= '0' && *p <= '9' || *p == '.') {
             do {
                 B[i++] = *p++;
@@ -1010,40 +1027,30 @@ void calc(char *p, int len) {
         else if (*p == '+') {
             p++;
             if (isdigit(*p)) B[i++] = '-'; //'-'가 operand가 아니라 음수인 경우
-            printf("A = %s\n", A);
-            printf("B = %s\n", B);
             answer = cal_plus(A, B);
-            printf("answer = %s\n", answer);
+            if(PRINT_ON) print_in_calc(A, B, answer);
             memset(A, 0, len + 1);
             memset(B, 0, len + 1);
             A = answer;
-            if (*p) memset(answer, 0, 2 * len + 1);
         }
         else if (*p == '*') {
             p++;
             if (isdigit(*p)) B[i++] = '-';
-            printf("A = %s\n", A);
-            printf("B = %s\n", B);
             answer = cal_multiply(A, B);
-            printf("answer = %s\n", answer);
+            if(PRINT_ON) print_in_calc(A, B, answer);
             memset(A, 0, len + 1);
             memset(B, 0, len + 1);
             A = answer;
-            if (*p) memset(answer, 0, 2 * len + 1);
         }
         else if (*p == '-') {
             p++;
             if (isdigit(*p)) B[i++] = '-';
-            else { printf("LINE 1069\n");
-                printf("A = %s\n", A);
-                printf("B = %s\n", B);
+            else {
                 answer = cal_minus(A, B);
-                strcpy(answer,remove_zero(answer));
-                printf("answer = %s\n", answer);
+                if(PRINT_ON) print_in_calc(A, B, answer);
                 memset(A, 0, len + 1);
                 memset(B, 0, len + 1);
-                A = answer;  printf("LINE 1076\n");
-                if (*p) memset(answer, 0, 2 * len + 1);
+                A = answer;
             }
         }
         else if (*p == '/') {
@@ -1060,4 +1067,8 @@ void calc(char *p, int len) {
         free(B);
         free(answer);
     }
+}
+
+void print_in_calc(char* A, char* B, char* answer) {
+    printf("A = %s , B = %s , answer = %s\n", A, B, answer);
 }
