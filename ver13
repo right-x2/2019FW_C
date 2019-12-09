@@ -521,7 +521,6 @@ char* remove_zero(char* str){
   }
   return str;
 }  // remove_zero
-
 int cal_decimal_length(char* X, char* Y) {  // 곱셈시 각 수의 소수부 길이를 계산하여 합 return
     int len = 0, a, b;
     a = strlen(X) - find_dot(X);
