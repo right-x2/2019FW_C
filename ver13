@@ -142,12 +142,12 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
    char *negative = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *c = malloc(sizeof(char)*strlen(a)*strlen(b));
    char *d = malloc(sizeof(char)*strlen(a)*strlen(b));
-   memset(answer,'0',sizeof(char)*strlen(a)*strlen(b));
-   memset(temp,'0',sizeof(char)*strlen(a)*strlen(b));
-   memset(temp2,'0',sizeof(char)*strlen(a)*strlen(b));
-   memset(temp3,'0',sizeof(char)*strlen(a)*strlen(b));
-   memset(temp4,'0',sizeof(char)*strlen(a)*strlen(b));
-   memset(negative,'0',sizeof(char)*strlen(a)*strlen(b));
+   memset(answer,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp2,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp3,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(temp4,'X',sizeof(char)*strlen(a)*strlen(b));
+   memset(negative,'X',sizeof(char)*strlen(a)*strlen(b));
 
 
    if(a=="0"||b=="0") return "0";
@@ -214,7 +214,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
          answer[j] = one;
       }
       if(sum>0) answer[j] = sum+48;
-      if(answer[0] == '0') {
+      if(answer[0] == 'X') {
         strncpy(temp,answer+1,strlenA+cnt+1);
         strcpy(answer,temp);
         //printf("%sanswer:\n",answer );
@@ -231,7 +231,7 @@ char* cal_multiply(char *a, char *b) {  // 곱셈
       cnt++;
       count++;
       sum = 0;
-      memset(answer,'0',sizeof(char)*strlen(a)*strlen(b));
+      memset(answer,'X',sizeof(char)*strlen(a)*strlen(b));
       for(k = 0; k < strlenA; k++, c++) continue;
   }
   if(dot==0){
@@ -283,7 +283,7 @@ char* mul_add(char *a, char *b){
     int lenA = strlen(a);
     int lenB = strlen(b);
     char *temp = malloc(sizeof(char)*lenA*lenB);
-    memset(temp,'0',sizeof(char)*len);
+    memset(temp,'X',sizeof(char)*len);
     temp[len] = '\0';
     len--;
 
@@ -331,7 +331,7 @@ char* mul_add(char *a, char *b){
     int lenA = strlen(a);
     int lenB = strlen(b);
     char *temp = malloc(sizeof(char)*lenA*lenB);
-    memset(temp,'0',sizeof(char)*lenA*lenB);
+    memset(temp,'X',sizeof(char)*lenA*lenB);
     temp[len] = '\0';
     len--;
 
@@ -382,7 +382,7 @@ char* mul_add(char *a, char *b){
     int lenB = strlen(b);
 
     char *temp = malloc(sizeof(char)*lenA*lenB);
-    memset(temp,'0',sizeof(char)*len);
+    memset(temp,'X',sizeof(char)*len);
     temp[len] = '\0';
     len--;
 
@@ -440,8 +440,8 @@ char* add_dot(char *str,int dot){
     int len2 = strlen(str);
     char *answer = malloc(sizeof(char)*len2);
     char *temp = malloc(sizeof(char)*len2);
-    memset(answer,'0',sizeof(char)*len2);
-    memset(temp,'0',sizeof(char)*len2);
+    memset(answer,'X',sizeof(char)*len2);
+    memset(temp,'X',sizeof(char)*len2);
     strcpy(answer,str);
     int len = strlen(answer);
     temp[len] = '\0';
@@ -466,10 +466,10 @@ char* remove_zero(char* str){
   char *temp = malloc(sizeof(char)*len*2);
   char *temp2 = malloc(sizeof(char)*len*2);
   char *result = malloc(sizeof(char)*len*2);
-  memset(temp,'0',sizeof(char)*len*2);
-  memset(temp2,'0',sizeof(char)*len*2);
-  memset(result,'0',sizeof(char)*len*2);
-  memset(negative,'0',sizeof(char)*len*2);
+  memset(temp,'X',sizeof(char)*len*2);
+  memset(temp2,'X',sizeof(char)*len*2);
+  memset(result,'X',sizeof(char)*len*2);
+  memset(negative,'X',sizeof(char)*len*2);
   
   if(str[0]=='-'){
     nflag = 1;
@@ -521,18 +521,6 @@ char* remove_zero(char* str){
   }
   return str;
 }  // remove_zero
-int cal_decimal_length(char* X, char* Y) {  // 곱셈시 각 수의 소수부 길이를 계산하여 합 return
-    int len = 0, a, b;
-    a = strlen(X) - find_dot(X);
-    b = strlen(Y) - find_dot(Y);
-    if (a > 0)
-        len += a - 1;
-    if (b > 0)
-        len += b - 1;
-    if (len > 0)
-        multiply_decimal = 1;
-    return len;
-}  // end cal_decimal_length()
 
 char* cal_plus(char *X, char*Y) {  // 덧셈
 //    if(first_negative) return minus_exception(X, Y);
